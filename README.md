@@ -20,3 +20,5 @@ This files are expected to be made available to the container as a volume mount 
 ```
 docker run -t --rm -v $(pwd):/root/files aitorpazos/create-debian-iso
 ```
+
+If everything goes well, the output ISO file will be located in the `$(pwd)` folder.
