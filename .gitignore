@@ -1,0 +1,7 @@
+# IDEs
+.idea
+**/*.iml
+.vscode
+
+# Ignore generated test images
+**/*.iso
