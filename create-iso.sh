@@ -4,14 +4,14 @@
 # ROOT_PASSWD=<Set the root password>
 
 # Check if required files have been provided
-if [ ! -f /root/files/configure.sh ] || \
-   [ ! -f /root/files/packages ] || \
-   [ ! -f /root/files/repositories-keys ] || \
-   [ ! -f /root/files/repositories ]; then
+if [ ! -f /root/files/config/configure.sh ] || \
+   [ ! -f /root/files/config/packages ] || \
+   [ ! -f /root/files/config/repositories-keys ] || \
+   [ ! -f /root/files/config/repositories ]; then
      cat << EOF
 Some required files are not available.
 
-You need to mount a folder to /root/files with the following files in it:
+You need to mount a folder to /root/files with a config directory in it and the following files:
   - configure.sh
       This is the script where you can run custom actions within the image.
   - packages
@@ -56,10 +56,8 @@ debootstrap \
     http://ftp.us.debian.org/debian/
 
 # Copy cutomisation files to chroot
-cp /root/files/configure.sh $HOME/LIVE_BOOT/chroot/root/
-cp /root/files/packages     $HOME/LIVE_BOOT/chroot/root/
-cp /root/files/repositories-keys $HOME/LIVE_BOOT/chroot/root/
-cp /root/files/repositories $HOME/LIVE_BOOT/chroot/etc/apt/sources.list.d/custom-debian.list
+cp -r /root/files/config/* $HOME/LIVE_BOOT/chroot/root/
+cp /root/files/config/repositories $HOME/LIVE_BOOT/chroot/etc/apt/sources.list.d/custom-debian.list
 cp /tmp/chroot-script.sh $HOME/LIVE_BOOT/chroot/root/chroot-script.sh
 # Set execution flag
 chmod +x $HOME/LIVE_BOOT/chroot/root/configure.sh

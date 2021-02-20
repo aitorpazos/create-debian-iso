@@ -6,7 +6,7 @@ It is based on the great instructions provided by Will Halley: https://willhaley
 
 ## Build a custom image
 
-To build your custom image you will need to create the following files:
+To build your custom image you will need to create a `config` directory which contains the following files:
 
 - `configure.sh`: This script will be end at the end of the image configuration and allows you to add custom configuration
 - `packages`: List the packages to be added to your ISO. At least one package is expected
@@ -15,7 +15,8 @@ To build your custom image you will need to create the following files:
 
 You can see examples in `example` directory.
 
-This files are expected to be made available to the container as a volume mount to `/root/files` directory
+This files are expected to be made available to the container as a volume mount to `/root/files` directory (must contain
+a `config` directory with the required files):
 
 ```
 docker run -t --rm -v $(pwd):/root/files aitorpazos/create-debian-iso
