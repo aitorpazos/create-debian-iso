@@ -1,0 +1,69 @@
+on:
+  push:
+
+name: CI build
+
+jobs:
+  checkout:
+    name: Checkout code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+  buildBuster:
+    name: Create Debian Buster ISO
+    runs-on: ubuntu-latest
+    needs:
+      - checkout
+    steps:
+      - name: Build Debian Buster ISO
+        id: build_buster_iso
+        run: make buildDebianBuster
+  buildBionic:
+    name: Create Ubuntu Bionic ISO
+    runs-on: ubuntu-latest
+    needs:
+      - checkout
+    steps:
+      - name: Build Ubuntu Bionic ISO
+        id: build_bionic_iso
+        run: make buildUbuntuBionic
+  buildFocal:
+    name: Create Ubuntu Focal ISO
+    runs-on: ubuntu-latest
+    needs: 
+      - checkout
+    steps:
+      - name: Build Ubuntu Focal ISO
+        id: build_focal_iso
+        run: make buildUbuntuFocal
+  testBuster:
+    name: Test Debian Buster ISO
+    runs-on: ubuntu-latest
+    needs:
+      - buildDebianBuster
+    steps:
+      - name: Test Debian Buster ISO
+        id: test_buster_iso
+        run: make testExampleBuster
+  testBionic:
+    name: Test Ubuntu Bionic ISO
+    runs-on: ubuntu-latest
+    needs:
+      - buildUbuntuBionic
+    steps:
+      - name: Test Ubuntu Bionic ISO
+        id: test_bionic_iso
+        run: make testExampleBionic
+  testFocal:
+    name: Test Ubuntu Focal ISO
+    runs-on: ubuntu-latest
+    needs:
+      - buildUbuntuFocal
+    steps:
+      - name: Test Ubuntu Focal ISO
+        id: test_focal_iso
+        run: make testExampleFocal

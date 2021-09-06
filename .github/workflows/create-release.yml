@@ -1,0 +1,167 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Create Release
+
+jobs:
+  checkout:
+    name: Checkout code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+  buildBuster:
+    name: Create Debian Buster ISO
+    runs-on: ubuntu-latest
+    needs:
+      - checkout
+    steps:
+      - name: Build Debian Buster ISO
+        id: build_buster_iso
+        run: make buildDebianBuster
+  buildBionic:
+    name: Create Ubuntu Bionic ISO
+    runs-on: ubuntu-latest
+    needs:
+      - checkout
+    steps:
+      - name: Build Ubuntu Bionic ISO
+        id: build_bionic_iso
+        run: make buildUbuntuBionic
+  buildFocal:
+    name: Create Ubuntu Focal ISO
+    runs-on: ubuntu-latest
+    needs: 
+      - checkout
+    steps:
+      - name: Build Ubuntu Focal ISO
+        id: build_focal_iso
+        run: make buildUbuntuFocal
+  testBuster:
+    name: Test Debian Buster ISO
+    runs-on: ubuntu-latest
+    needs:
+      - buildDebianBuster
+    steps:
+      - name: Test Debian Buster ISO
+        id: test_buster_iso
+        run: make testExampleBuster
+  testBionic:
+    name: Test Ubuntu Bionic ISO
+    runs-on: ubuntu-latest
+    needs:
+      - buildUbuntuBionic
+    steps:
+      - name: Test Ubuntu Bionic ISO
+        id: test_bionic_iso
+        run: make testExampleBionic
+  testFocal:
+    name: Test Ubuntu Focal ISO
+    runs-on: ubuntu-latest
+    needs:
+      - buildUbuntuFocal
+    steps:
+      - name: Test Ubuntu Focal ISO
+        id: test_focal_iso
+        run: make testExampleFocal
+  tagImages:
+    name: Tag ISO builder images
+    runs-on: ubuntu-latest
+    needs:
+      - testBuster
+    steps:
+      - name: Tag Debian Buster as default
+        id: tag_buster_default_iso_builder
+        run: docker tag aitorpazos/create-debian-iso:debian-buster aitorpazos/create-debian-iso:latest
+      - name: Tag Debian Buster as version
+        id: tag_buster_version_iso_builder
+        run: docker tag aitorpazos/create-debian-iso:debian-buster aitorpazos/create-debian-iso:${{ github.ref }}
+      - name: Tag Debian Buster
+        id: tag_buster_iso_builder
+        run: docker tag aitorpazos/create-debian-iso:debian-buster aitorpazos/create-debian-iso:debian-buster-${{ github.ref }}
+      - name: Tag Ubuntu Bionic
+        id: tag_bionic_iso_builder
+        run: docker tag aitorpazos/create-debian-iso:ubuntu-bionic aitorpazos/create-debian-iso:ubuntu-bionic-${{ github.ref }}
+      - name: Tag Ubuntu Focal
+        id: tag_focal_iso_builder
+        run: docker tag aitorpazos/create-debian-iso:ubuntu-focal aitorpazos/create-debian-iso:ubuntu-focal-${{ github.ref }}
+  loginDockerHub:
+    name: Login to Docker Hub
+    runs-on: ubuntu-latest
+    needs:
+      - tagImages
+    steps:
+      - name: Login into Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+  pushBuster:
+    name: Push Debian Buster ISO builder images
+    runs-on: ubuntu-latest
+    needs:
+      - loginDockerHub
+    steps:
+      - name: Push Debian Buster default
+        id: push_buster_default_iso_builder
+        run: docker push aitorpazos/create-debian-iso:debian-buster
+      - name: Push Debian Buster latest
+        id: push_buster_latest_iso_builder
+        run: docker push aitorpazos/create-debian-iso:latest
+      - name: Push version
+        id: push_version_iso_builder
+        run: docker push aitorpazos/create-debian-iso:${{ github.ref }}
+      - name: Push Debian Buster version
+        id: push_buster_version_iso_builder
+        run: docker push aitorpazos/create-debian-iso:debian-buster-${{ github.ref }}
+  pushBionic:
+    name: Push Ubuntu Bionic ISO builder images
+    runs-on: ubuntu-latest
+    needs:
+      - loginDockerHub
+    steps:
+      - name: Push Ubuntu Bionic
+        id: push_bionic_iso_builder
+        run: docker push aitorpazos/create-debian-iso:ubuntu-bionic
+      - name: Push Ubuntu Bionic version
+        id: push_bionic_version_iso_builder
+        run: docker push aitorpazos/create-debian-iso:ubuntu-bionic-${{ github.ref }}
+  pushFocal:
+    name: Push Ubuntu Focal ISO builder images
+    runs-on: ubuntu-latest
+    needs:
+      - loginDockerHub
+    steps:
+      - name: Push Ubuntu Focal
+        id: push_focal_iso_builder
+        run: docker push aitorpazos/create-debian-iso:ubuntu-focal
+      - name: Push Ubuntu Focal version
+        id: push_focal_version_iso_builder
+        run: docker push aitorpazos/create-debian-iso:ubuntu-focal-${{ github.ref }}
+  doRelease:
+    name: Perform release
+    runs-on: ubuntu-latest
+    needs: 
+      - pushBuster
+      - pushBionic
+      - pushFocal
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Changes in this Release
+            - First Change
+          draft: true
+          prerelease: false
