@@ -7,8 +7,6 @@ jobs:
   buildBuster:
     name: Create Debian Buster ISO
     runs-on: ubuntu-latest
-    needs:
-      - checkout
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -21,8 +19,6 @@ jobs:
   buildBionic:
     name: Create Ubuntu Bionic ISO
     runs-on: ubuntu-latest
-    needs:
-      - checkout
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -35,8 +31,6 @@ jobs:
   buildFocal:
     name: Create Ubuntu Focal ISO
     runs-on: ubuntu-latest
-    needs: 
-      - checkout
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
