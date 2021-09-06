@@ -4,66 +4,45 @@ on:
 name: CI build
 
 jobs:
-  checkout:
-    name: Checkout code
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Get the version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
   buildBuster:
     name: Create Debian Buster ISO
     runs-on: ubuntu-latest
     needs:
       - checkout
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Build Debian Buster ISO
         id: build_buster_iso
         run: make buildDebianBuster
+      - name: Test Debian Buster ISO
+        id: test_buster_iso
+        run: make testExampleBuster
   buildBionic:
     name: Create Ubuntu Bionic ISO
     runs-on: ubuntu-latest
     needs:
       - checkout
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Build Ubuntu Bionic ISO
         id: build_bionic_iso
         run: make buildUbuntuBionic
+      - name: Test Ubuntu Bionic ISO
+        id: test_bionic_iso
+        run: make testExampleBionic
   buildFocal:
     name: Create Ubuntu Focal ISO
     runs-on: ubuntu-latest
     needs: 
       - checkout
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Build Ubuntu Focal ISO
         id: build_focal_iso
         run: make buildUbuntuFocal
-  testBuster:
-    name: Test Debian Buster ISO
-    runs-on: ubuntu-latest
-    needs:
-      - buildBuster
-    steps:
-      - name: Test Debian Buster ISO
-        id: test_buster_iso
-        run: make testExampleBuster
-  testBionic:
-    name: Test Ubuntu Bionic ISO
-    runs-on: ubuntu-latest
-    needs:
-      - buildBionic
-    steps:
-      - name: Test Ubuntu Bionic ISO
-        id: test_bionic_iso
-        run: make testExampleBionic
-  testFocal:
-    name: Test Ubuntu Focal ISO
-    runs-on: ubuntu-latest
-    needs:
-      - buildFocal
-    steps:
       - name: Test Ubuntu Focal ISO
         id: test_focal_iso
         run: make testExampleFocal
