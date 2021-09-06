@@ -83,7 +83,7 @@ jobs:
         run: docker push aitorpazos/create-debian-iso:ubuntu-bionic
       - name: Push Ubuntu Bionic version
         id: push_bionic_version_iso_builder
-        run: docker push aitorpazos/create-debian-iso:ubuntu-bionic-${{ github.ref }}
+        run: docker push aitorpazos/create-debian-iso:ubuntu-bionic-${{ steps.get_version.outputs.VERSION }}
   buildFocal:
     name: Create Ubuntu Focal ISO
     runs-on: ubuntu-latest
@@ -111,7 +111,7 @@ jobs:
         run: docker push aitorpazos/create-debian-iso:ubuntu-focal
       - name: Push Ubuntu Focal version
         id: push_focal_version_iso_builder
-        run: docker push aitorpazos/create-debian-iso:ubuntu-focal-${{ github.ref }}
+        run: docker push aitorpazos/create-debian-iso:ubuntu-focal-${{ steps.get_version.outputs.VERSION }}
   doRelease:
     name: Perform release
     runs-on: ubuntu-latest
