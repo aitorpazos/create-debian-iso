@@ -1,6 +1,6 @@
-# Custom Debian ISO builder
+# Custom Debian based distros ISO builder
 
-This repository defines a docker image that allows to build custom live Debian based ISOs.
+This repository defines a docker image that allows to build custom live ISOs for Debian based distros.
 
 It is based on the great instructions provided by Will Halley: https://willhaley.com/blog/custom-debian-live-environment/
 
@@ -19,7 +19,7 @@ This files are expected to be made available to the container as a volume mount 
 a `config` directory with the required files):
 
 ```
-docker run -t --rm -v $(pwd):/root/files aitorpazos/create-debian-iso
+docker run -t --rm -e OUTPUT_FILE=my-build.iso -v $(pwd):/root/files aitorpazos/create-debian-iso:<distro version tag>
 ```
 
 If everything goes well, the output ISO file will be located in the `$(pwd)` folder.

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# DEBIAN_VERSION=<Set the debian version to create>
+# DISTRO=<Set the distro to create>
+# DISTRO_VERSION=<Set the distro version to create>
 # ROOT_PASSWD=<Set the root password>
 
 # Check if required files have been provided
@@ -22,7 +23,7 @@ You need to mount a folder to /root/files with a config directory in it and the 
       Define keys for the additional repositories. Format of each line: <keyserver> <key id>
 
 Example:
-$ docker run -t --rm -v /home/user/my-folder:/root/files aitorpazos/create-debian-iso
+$ docker run -t --rm -e OUTPUT_FILE=my-build.iso -v /home/user/my-folder:/root/files aitorpazos/create-debian-iso:<version tag>
 EOF
   exit 1
 fi
@@ -47,17 +48,22 @@ apt-get install -y \
 # Create base directory
 mkdir -p $HOME/LIVE_BOOT
 
-# Bootstrap debian chroot
+# Bootstrap distro chroot default distro is Debian
+DISTRO_BOOTSTRAP_URL=http://ftp.us.debian.org/debian/
+if [ "${DISTRO}" == "ubuntu" ]; then
+  DISTRO_BOOTSTRAP_URL=http://archive.ubuntu.com/ubuntu/
+fi 
+
 debootstrap \
     --arch=amd64 \
     --variant=minbase \
-    ${DEBIAN_VERSION} \
+    ${DISTRO_VERSION} \
     $HOME/LIVE_BOOT/chroot \
-    http://ftp.us.debian.org/debian/
+    ${DISTRO_BOOTSTRAP_URL}
 
 # Copy cutomisation files to chroot
 cp -r /root/files/config/* $HOME/LIVE_BOOT/chroot/root/
-cp /root/files/config/repositories $HOME/LIVE_BOOT/chroot/etc/apt/sources.list.d/custom-debian.list
+cp /root/files/config/repositories $HOME/LIVE_BOOT/chroot/etc/apt/sources.list.d/custom-repo.list
 cp /tmp/chroot-script.sh $HOME/LIVE_BOOT/chroot/root/chroot-script.sh
 # Set execution flag
 chmod +x $HOME/LIVE_BOOT/chroot/root/configure.sh
@@ -114,7 +120,7 @@ EOF
 
 # Configure GRUB. Used in EFI/UEFI boot
 cat <<'EOF' >$HOME/LIVE_BOOT/staging/boot/grub/grub.cfg
-search --set=root --file /DEBIAN_CUSTOM
+search --set=root --file /CUSTOM_ISO
 
 set default="0"
 set timeout=30
@@ -134,13 +140,13 @@ EOF
 
 # Early boot GRUB config for EFI boot
 cat <<'EOF' >$HOME/LIVE_BOOT/tmp/grub-standalone.cfg
-search --set=root --file /DEBIAN_CUSTOM
+search --set=root --file /CUSTOM_ISO
 set prefix=($root)/boot/grub/
 configfile /boot/grub/grub.cfg
 EOF
 
 # Point GRUB to boot filesystem
-touch $HOME/LIVE_BOOT/staging/DEBIAN_CUSTOM
+touch $HOME/LIVE_BOOT/staging/CUSTOM_ISO
 
 # Copy bootloader files
 # BIOS files
@@ -169,9 +175,9 @@ grub-mkstandalone \
 xorriso \
     -as mkisofs \
     -iso-level 3 \
-    -o "/root/files/debian-custom.iso" \
+    -o "/root/files/${OUTPUT_FILE}" \
     -full-iso9660-filenames \
-    -volid "DEBIAN_CUSTOM" \
+    -volid "CUSTOM_ISO" \
     -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin \
     -eltorito-boot \
         isolinux/isolinux.bin \

@@ -3,7 +3,7 @@
 export ROOT_PASSWD=$1
 
 # Set hostname
-echo "debian-live" > /etc/hostname
+echo "live-iso" > /etc/hostname
 
 # Set noninteractive APT frontend
 export DEBIAN_FRONTEND=noninteractive
