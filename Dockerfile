@@ -10,7 +10,8 @@ ADD chroot-script.sh /tmp/chroot-script.sh
 
 RUN chmod +x /usr/local/bin/create-iso.sh
 
-ENV DISTRO_VERSION=${DISTRO_VERSION} \
+ENV DISTRO=${DISTRO} \
+    DISTRO_VERSION=${DISTRO_VERSION} \
     OUTPUT_FILE=${DISTRO}-${DISTRO_VERSION}-custom.iso \
     ROOT_PASSWD=toor
 
