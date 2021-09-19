@@ -40,3 +40,15 @@ jobs:
       - name: Test Ubuntu Focal ISO
         id: test_focal_iso
         run: make testExampleFocal
+  buildNeon:
+    name: Create Kde Neon ISO
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build Ubuntu Focal ISO
+        id: build_neon_iso
+        run: make buildKdeNeon
+      - name: Test Kde Neon ISO
+        id: test_neon_iso
+        run: make testExampleNeon

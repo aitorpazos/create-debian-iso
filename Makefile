@@ -1,7 +1,7 @@
 IMAGE_TAG:=aitorpazos/create-debian-iso
 
 .PHONY: build
-build: buildDebianBuster buildUbuntuBionic buildUbuntuFocal
+build: buildDebianBuster buildUbuntuBionic buildUbuntuFocal buildKdeNeon
 
 .PHONY: buildDebianBuster
 buildDebianBuster:
@@ -15,8 +15,12 @@ buildUbuntuBionic:
 buildUbuntuFocal:
 	docker build --rm --build-arg DISTRO=ubuntu --build-arg DISTRO_VERSION=focal -t $(IMAGE_TAG) -t $(IMAGE_TAG):ubuntu-focal .
 
+.PHONY: buildKdeNeon
+buildKdeNeon:
+	docker build --rm --build-arg DISTRO=ubuntu --build-arg DISTRO_VERSION=focal --build-arg DISTRO_FLAVOR=neon -t $(IMAGE_TAG) -t $(IMAGE_TAG):kde-neon .
+
 .PHONY: test
-test: testExampleBuster testExampleBionic testExampleFocal
+test: testExampleBuster testExampleBionic testExampleFocal testExampleNeon
 
 .PHONY: testExampleBuster
 testExampleBuster:
@@ -29,3 +33,7 @@ testExampleBionic:
 .PHONY: testExampleFocal
 testExampleFocal:
 	docker run -t --rm --privileged -v $(shell pwd)/example:/root/files $(IMAGE_TAG):ubuntu-focal
+
+.PHONY: testExampleNeon
+testExampleNeon:
+	docker run -t --rm --privileged -v $(shell pwd)/example:/root/files $(IMAGE_TAG):kde-neon

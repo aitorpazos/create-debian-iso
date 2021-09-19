@@ -85,6 +85,27 @@ deb http://security.ubuntu.com/ubuntu/ ${DISTRO_VERSION}-security multiverse
 # deb-src http://security.ubuntu.com/ubuntu/ ${DISTRO_VERSION}-security multiverse
 EOF
 fi
+
+# Add support for KDE Neon
+if [ "${DISTRO_FLAVOR}" == "neon" ]; then
+  # add the KDE Neon repository
+  wget -qO - 'https://archive.neon.kde.org/public.key' | sudo apt-key add -
+  
+  cat <<EOF > /etc/apt/sources.list.d/neon.list
+  deb http://archive.neon.kde.org/user/ ${DISTRO_VERSION} main
+  deb-src http://archive.neon.kde.org/user/ ${DISTRO_VERSION} main
+EOF
+  
+  # pin base-files to not install the Neon version
+  # - this prevents the install identifying as Neon,
+  # and stops problems with programs that this confuses,
+  # eg the Docker install script 
+  cat <<EOF > /etc/apt/preferences.d/99block-neon 
+  Package: base-files
+  Pin: origin archive.neon.kde.org
+  Pin-Priority: 1  
+EOF
+fi
  
 # Update ATP repos
 apt-get update
