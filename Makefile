@@ -20,12 +20,12 @@ test: testExampleBuster testExampleBionic testExampleFocal
 
 .PHONY: testExampleBuster
 testExampleBuster:
-	docker run -t --rm -v $(shell pwd)/example:/root/files $(IMAGE_TAG):debian-buster
+	docker run -t --rm --privileged -v $(shell pwd)/example:/root/files $(IMAGE_TAG):debian-buster
 	
 .PHONY: testExampleBionic
 testExampleBionic:
-	docker run -t --rm -v $(shell pwd)/example:/root/files $(IMAGE_TAG):ubuntu-bionic
+	docker run -t --rm --privileged -v $(shell pwd)/example:/root/files $(IMAGE_TAG):ubuntu-bionic
 
 .PHONY: testExampleFocal
 testExampleFocal:
-	docker run -t --rm -v $(shell pwd)/example:/root/files $(IMAGE_TAG):ubuntu-focal
+	docker run -t --rm --privileged -v $(shell pwd)/example:/root/files $(IMAGE_TAG):ubuntu-focal

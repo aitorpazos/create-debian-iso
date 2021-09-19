@@ -4,6 +4,9 @@
 # DISTRO_VERSION=<Set the distro version to create>
 # ROOT_PASSWD=<Set the root password>
 
+# Exit on any error to prevent hiding failures
+set -e
+
 # Check if required files have been provided
 if [ ! -f /root/files/config/configure.sh ] || \
    [ ! -f /root/files/config/packages ] || \
@@ -37,6 +40,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y \
     debootstrap \
+    dosfstools \
     squashfs-tools \
     xorriso \
     isolinux \
@@ -54,6 +58,7 @@ if [ "${DISTRO}" == "ubuntu" ]; then
   DISTRO_BOOTSTRAP_URL=http://archive.ubuntu.com/ubuntu/
 fi 
 
+echo "Running debootstrap for ${DISTRO} ${DISTRO_VERSION} : ${DISTRO_BOOTSTRAP_URL} "
 debootstrap \
     --arch=amd64 \
     --variant=minbase \
@@ -61,7 +66,8 @@ debootstrap \
     $HOME/LIVE_BOOT/chroot \
     ${DISTRO_BOOTSTRAP_URL}
 
-# Copy cutomisation files to chroot
+echo "Copying configuration files to chroot..."
+# Copy customisation files to chroot
 cp -r /root/files/config/* $HOME/LIVE_BOOT/chroot/root/
 cp /root/files/config/repositories $HOME/LIVE_BOOT/chroot/etc/apt/sources.list.d/custom-repo.list
 cp /tmp/chroot-script.sh $HOME/LIVE_BOOT/chroot/root/chroot-script.sh
@@ -69,6 +75,7 @@ cp /tmp/chroot-script.sh $HOME/LIVE_BOOT/chroot/root/chroot-script.sh
 chmod +x $HOME/LIVE_BOOT/chroot/root/configure.sh
 chmod +x $HOME/LIVE_BOOT/chroot/root/chroot-script.sh
 
+echo "Running chroot-script.sh ..."
 # chroot into the bootstrap folder
 chroot $HOME/LIVE_BOOT/chroot /root/chroot-script.sh ${ROOT_PASSWD}
 
