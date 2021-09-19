@@ -75,9 +75,15 @@ cp /tmp/chroot-script.sh $HOME/LIVE_BOOT/chroot/root/chroot-script.sh
 chmod +x $HOME/LIVE_BOOT/chroot/root/configure.sh
 chmod +x $HOME/LIVE_BOOT/chroot/root/chroot-script.sh
 
+# Mount special filesystems as may required by some packages installs (eg: java)
+mount -t proc none $HOME/LIVE_BOOT/chroot/proc
+
 echo "Running chroot-script.sh ..."
 # chroot into the bootstrap folder
 chroot $HOME/LIVE_BOOT/chroot /root/chroot-script.sh ${ROOT_PASSWD}
+
+# Unmounting special filesystems as they conflict with the ISO building
+umount $HOME/LIVE_BOOT/chroot/proc
 
 # Prepare boot directories
 mkdir -p $HOME/LIVE_BOOT/{staging/{EFI/boot,boot/grub/x86_64-efi,isolinux,live},tmp}
