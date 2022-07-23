@@ -16,8 +16,8 @@ jobs:
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-  buildBuster:
-    name: Create Debian Buster ISO
+  buildBullseye:
+    name: Create Debian Bullseye ISO
     runs-on: ubuntu-latest
     needs:
       - checkout
@@ -27,38 +27,38 @@ jobs:
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-      - name: Build Debian Buster ISO
-        id: build_buster_iso
-        run: make buildDebianBuster
-      - name: Test Debian Buster ISO
-        id: test_buster_iso
-        run: make testExampleBuster
-      - name: Tag Debian Buster as default
-        id: tag_buster_default_iso_builder
-        run: docker tag aitorpazos/create-debian-iso:debian-buster aitorpazos/create-debian-iso:latest
-      - name: Tag Debian Buster as version
-        id: tag_buster_version_iso_builder
-        run: docker tag aitorpazos/create-debian-iso:debian-buster aitorpazos/create-debian-iso:${{ steps.get_version.outputs.VERSION }}
-      - name: Tag Debian Buster
-        id: tag_buster_iso_builder
-        run: docker tag aitorpazos/create-debian-iso:debian-buster aitorpazos/create-debian-iso:debian-buster-${{ steps.get_version.outputs.VERSION }}
+      - name: Build Debian Bullseye ISO
+        id: build_bullseye_iso
+        run: make buildDebianBullseye
+      - name: Test Debian Bullseye ISO
+        id: test_bullseye_iso
+        run: make testExampleBullseye
+      - name: Tag Debian Bullseye as default
+        id: tag_bullseye_default_iso_builder
+        run: docker tag aitorpazos/create-debian-iso:debian-bullseye aitorpazos/create-debian-iso:latest
+      - name: Tag Debian Bullseye as version
+        id: tag_bullseye_version_iso_builder
+        run: docker tag aitorpazos/create-debian-iso:debian-bullseye aitorpazos/create-debian-iso:${{ steps.get_version.outputs.VERSION }}
+      - name: Tag Debian Bullseye
+        id: tag_bullseye_iso_builder
+        run: docker tag aitorpazos/create-debian-iso:debian-bullseye aitorpazos/create-debian-iso:debian-bullseye-${{ steps.get_version.outputs.VERSION }}
       - name: Login into Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Push Debian Buster default
-        id: push_buster_default_iso_builder
-        run: docker push aitorpazos/create-debian-iso:debian-buster
-      - name: Push Debian Buster latest
-        id: push_buster_latest_iso_builder
+      - name: Push Debian Bullseye default
+        id: push_bullseye_default_iso_builder
+        run: docker push aitorpazos/create-debian-iso:debian-bullseye
+      - name: Push Debian Bullseye latest
+        id: push_bullseye_latest_iso_builder
         run: docker push aitorpazos/create-debian-iso:latest
       - name: Push version
         id: push_version_iso_builder
         run: docker push aitorpazos/create-debian-iso:${{ steps.get_version.outputs.VERSION }}
-      - name: Push Debian Buster version
-        id: push_buster_version_iso_builder
-        run: docker push aitorpazos/create-debian-iso:debian-buster-${{ steps.get_version.outputs.VERSION }}
+      - name: Push Debian Bullseye version
+        id: push_bullseye_version_iso_builder
+        run: docker push aitorpazos/create-debian-iso:debian-bullseye-${{ steps.get_version.outputs.VERSION }}
   buildBionic:
     name: Create Ubuntu Bionic ISO
     runs-on: ubuntu-latest
@@ -156,7 +156,7 @@ jobs:
     name: Perform release
     runs-on: ubuntu-latest
     needs: 
-      - buildBuster
+      - buildBullseye
       - buildBionic
       - buildFocal
       - buildNeon

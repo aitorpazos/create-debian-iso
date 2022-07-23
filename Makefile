@@ -1,11 +1,11 @@
 IMAGE_TAG:=aitorpazos/create-debian-iso
 
 .PHONY: build
-build: buildDebianBuster buildUbuntuBionic buildUbuntuFocal buildKdeNeon
+build: buildDebianBullseye buildUbuntuBionic buildUbuntuFocal buildKdeNeon
 
-.PHONY: buildDebianBuster
-buildDebianBuster:
-	docker build --rm --build-arg DISTRO=debian --build-arg DISTRO_VERSION=buster -t $(IMAGE_TAG) -t $(IMAGE_TAG):debian-buster .
+.PHONY: buildDebianBullseye
+buildDebianBullseye:
+	docker build --rm --build-arg DISTRO=debian --build-arg DISTRO_VERSION=bullseye -t $(IMAGE_TAG) -t $(IMAGE_TAG):debian-bullseye .
 
 .PHONY: buildUbuntuBionic
 buildUbuntuBionic:
@@ -20,11 +20,11 @@ buildKdeNeon:
 	docker build --rm --build-arg DISTRO=ubuntu --build-arg DISTRO_VERSION=focal --build-arg DISTRO_FLAVOR=neon -t $(IMAGE_TAG) -t $(IMAGE_TAG):kde-neon .
 
 .PHONY: test
-test: testExampleBuster testExampleBionic testExampleFocal testExampleNeon
+test: testExampleBullseye testExampleBionic testExampleFocal testExampleNeon
 
-.PHONY: testExampleBuster
-testExampleBuster:
-	docker run -t --rm --privileged -v $(shell pwd)/example:/root/files $(IMAGE_TAG):debian-buster
+.PHONY: testExampleBullseye
+testExampleBullseye:
+	docker run -t --rm --privileged -v $(shell pwd)/example:/root/files $(IMAGE_TAG):debian-bullseye
 	
 .PHONY: testExampleBionic
 testExampleBionic:

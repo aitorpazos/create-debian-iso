@@ -4,18 +4,18 @@ on:
 name: CI build
 
 jobs:
-  buildBuster:
-    name: Create Debian Buster ISO
+  buildBullseye:
+    name: Create Debian Bullseye ISO
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Build Debian Buster ISO
-        id: build_buster_iso
-        run: make buildDebianBuster
-      - name: Test Debian Buster ISO
-        id: test_buster_iso
-        run: make testExampleBuster
+      - name: Build Debian Bullseye ISO
+        id: build_bullseye_iso
+        run: make buildDebianBullseye
+      - name: Test Debian Bullseye ISO
+        id: test_bullseye_iso
+        run: make testExampleBullseye
   buildBionic:
     name: Create Ubuntu Bionic ISO
     runs-on: ubuntu-latest
