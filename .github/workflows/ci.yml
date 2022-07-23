@@ -28,25 +28,25 @@ jobs:
       - name: Test Ubuntu Bionic ISO
         id: test_bionic_iso
         run: make testExampleBionic
-  buildFocal:
-    name: Create Ubuntu Focal ISO
+  buildJammy:
+    name: Create Ubuntu Jammy ISO
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Build Ubuntu Focal ISO
-        id: build_focal_iso
-        run: make buildUbuntuFocal
-      - name: Test Ubuntu Focal ISO
-        id: test_focal_iso
-        run: make testExampleFocal
+      - name: Build Ubuntu Jammy ISO
+        id: build_jammy_iso
+        run: make buildUbuntuJammy
+      - name: Test Ubuntu Jammy ISO
+        id: test_jammy_iso
+        run: make testExampleJammy
   buildNeon:
     name: Create Kde Neon ISO
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Build Ubuntu Focal ISO
+      - name: Build Ubuntu Jammy ISO
         id: build_neon_iso
         run: make buildKdeNeon
       - name: Test Kde Neon ISO

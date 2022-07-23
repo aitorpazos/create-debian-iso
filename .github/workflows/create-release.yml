@@ -90,8 +90,8 @@ jobs:
       - name: Push Ubuntu Bionic version
         id: push_bionic_version_iso_builder
         run: docker push aitorpazos/create-debian-iso:ubuntu-bionic-${{ steps.get_version.outputs.VERSION }}
-  buildFocal:
-    name: Create Ubuntu Focal ISO
+  buildJammy:
+    name: Create Ubuntu Jammy ISO
     runs-on: ubuntu-latest
     needs:
       - checkout
@@ -101,26 +101,26 @@ jobs:
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-      - name: Build Ubuntu Focal ISO
-        id: build_focal_iso
-        run: make buildUbuntuFocal
-      - name: Test Ubuntu Focal ISO
-        id: test_focal_iso
-        run: make testExampleFocal
-      - name: Tag Ubuntu Focal
-        id: tag_focal_iso_builder
-        run: docker tag aitorpazos/create-debian-iso:ubuntu-focal aitorpazos/create-debian-iso:ubuntu-focal-${{ steps.get_version.outputs.VERSION }}
+      - name: Build Ubuntu Jammy ISO
+        id: build_jammy_iso
+        run: make buildUbuntuJammy
+      - name: Test Ubuntu Jammy ISO
+        id: test_jammy_iso
+        run: make testExampleJammy
+      - name: Tag Ubuntu Jammy
+        id: tag_jammy_iso_builder
+        run: docker tag aitorpazos/create-debian-iso:ubuntu-jammy aitorpazos/create-debian-iso:ubuntu-jammy-${{ steps.get_version.outputs.VERSION }}
       - name: Login into Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Push Ubuntu Focal
-        id: push_focal_iso_builder
-        run: docker push aitorpazos/create-debian-iso:ubuntu-focal
-      - name: Push Ubuntu Focal version
-        id: push_focal_version_iso_builder
-        run: docker push aitorpazos/create-debian-iso:ubuntu-focal-${{ steps.get_version.outputs.VERSION }}
+      - name: Push Ubuntu Jammy
+        id: push_jammy_iso_builder
+        run: docker push aitorpazos/create-debian-iso:ubuntu-jammy
+      - name: Push Ubuntu Jammy version
+        id: push_jammy_version_iso_builder
+        run: docker push aitorpazos/create-debian-iso:ubuntu-jammy-${{ steps.get_version.outputs.VERSION }}
   buildNeon:
     name: Create Kde Neon ISO
     runs-on: ubuntu-latest
@@ -158,7 +158,7 @@ jobs:
     needs: 
       - buildBullseye
       - buildBionic
-      - buildFocal
+      - buildJammy
       - buildNeon
     steps:
       - name: Create Release

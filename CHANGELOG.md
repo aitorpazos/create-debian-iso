@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Debian `buster` replaced by `bullseye`.
+- Ubuntu `focal` replaced by `jammy`.
 
 ## [0.4.0] - 2021-09-19
 
