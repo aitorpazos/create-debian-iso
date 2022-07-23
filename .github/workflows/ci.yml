@@ -16,18 +16,6 @@ jobs:
       - name: Test Debian Bullseye ISO
         id: test_bullseye_iso
         run: make testExampleBullseye
-  buildBionic:
-    name: Create Ubuntu Bionic ISO
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Build Ubuntu Bionic ISO
-        id: build_bionic_iso
-        run: make buildUbuntuBionic
-      - name: Test Ubuntu Bionic ISO
-        id: test_bionic_iso
-        run: make testExampleBionic
   buildJammy:
     name: Create Ubuntu Jammy ISO
     runs-on: ubuntu-latest
