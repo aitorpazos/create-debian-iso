@@ -86,10 +86,20 @@ deb http://security.ubuntu.com/ubuntu/ ${DISTRO_VERSION}-security multiverse
 EOF
 fi
 
+# Update ATP repos
+apt-get update
+
+apt-get install -y --no-install-recommends \
+    ${LINUX_PACKAGE} \
+    live-boot \
+    gnupg2 \
+    wget \
+    systemd-sysv
+
 # Add support for KDE Neon
 if [ "${DISTRO_FLAVOR}" == "neon" ]; then
   # add the KDE Neon repository
-  wget -qO - 'https://archive.neon.kde.org/public.key' | sudo apt-key add -
+  wget -qO - 'https://archive.neon.kde.org/public.key' | apt-key add -
   
   cat <<EOF > /etc/apt/sources.list.d/neon.list
   deb http://archive.neon.kde.org/user/ ${DISTRO_VERSION} main
@@ -105,16 +115,11 @@ EOF
   Pin: origin archive.neon.kde.org
   Pin-Priority: 1  
 EOF
+  
+  apt-get update
+  apt-get upgrade -y
 fi
  
-# Update ATP repos
-apt-get update
-
-apt-get install -y --no-install-recommends \
-    ${LINUX_PACKAGE} \
-    live-boot \
-    systemd-sysv
-
 # Install additional packages
 apt-get install -y --no-install-recommends $(cat /root/packages)
 
