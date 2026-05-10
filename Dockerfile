@@ -1,10 +1,11 @@
 ARG DISTRO=debian
-ARG DISTRO_VERSION=bullseye
+ARG DISTRO_VERSION=bookworm
 FROM ${DISTRO}:${DISTRO_VERSION}
 
 ARG DISTRO
 ARG DISTRO_VERSION
 ARG DISTRO_FLAVOR=${DISTRO_VERSION}
+ARG ARCH=amd64
 
 ADD create-iso.sh /usr/local/bin/create-iso.sh
 ADD chroot-script.sh /tmp/chroot-script.sh
@@ -14,6 +15,7 @@ RUN chmod +x /usr/local/bin/create-iso.sh
 ENV DISTRO=${DISTRO} \
     DISTRO_VERSION=${DISTRO_VERSION} \
     DISTRO_FLAVOR=${DISTRO_FLAVOR} \
+    ARCH=${ARCH} \
     OUTPUT_FILE=${DISTRO}-${DISTRO_FLAVOR}-custom.iso \
     ROOT_PASSWD=toor
 

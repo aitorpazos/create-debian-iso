@@ -1,4 +1,4 @@
-# You may add additional repos keys to this file. Follow this format
-# <key server> <key>
+# You may add additional repository GPG key URLs to this file, one per line.
+# Each line should be a URL to a GPG key file.
 # Example:
-# hkp://keyserver.ubuntu.com:80 9DA31620334BD75D9DCB49F368818C72E52529D4
+# https://www.mongodb.org/static/pgp/server-7.0.asc

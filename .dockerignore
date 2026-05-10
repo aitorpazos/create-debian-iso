@@ -1,1 +1,8 @@
 example
+.github
+.git
+*.iso
+*.md
+.gitignore
+.idea
+.vscode

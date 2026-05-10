@@ -1,42 +1,53 @@
-on:
-  push:
-
 name: CI build
 
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
 jobs:
-  buildBullseye:
-    name: Create Debian Bullseye ISO
+  lint:
+    name: Shellcheck
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Build Debian Bullseye ISO
-        id: build_bullseye_iso
-        run: make buildDebianBullseye
-      - name: Test Debian Bullseye ISO
-        id: test_bullseye_iso
-        run: make testExampleBullseye
-  buildJammy:
-    name: Create Ubuntu Jammy ISO
+        uses: actions/checkout@v4
+      - name: Run shellcheck
+        run: |
+          shellcheck create-iso.sh chroot-script.sh example/config/configure.sh
+
+  build-bookworm:
+    name: Debian Bookworm
     runs-on: ubuntu-latest
+    needs: lint
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Build Ubuntu Jammy ISO
-        id: build_jammy_iso
-        run: make buildUbuntuJammy
-      - name: Test Ubuntu Jammy ISO
-        id: test_jammy_iso
-        run: make testExampleJammy
-  buildNeon:
-    name: Create Kde Neon ISO
+        uses: actions/checkout@v4
+      - name: Build image
+        run: make buildDebianBookworm
+      - name: Test image
+        run: make testExampleBookworm
+
+  build-noble:
+    name: Ubuntu Noble
     runs-on: ubuntu-latest
+    needs: lint
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Build Ubuntu Jammy ISO
-        id: build_neon_iso
+        uses: actions/checkout@v4
+      - name: Build image
+        run: make buildUbuntuNoble
+      - name: Test image
+        run: make testExampleNoble
+
+  build-neon:
+    name: KDE Neon
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build image
         run: make buildKdeNeon
-      - name: Test Kde Neon ISO
-        id: test_neon_iso
+      - name: Test image
         run: make testExampleNeon
