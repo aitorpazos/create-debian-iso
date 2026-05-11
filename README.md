@@ -19,6 +19,7 @@ Based on [Will Haley's guide](https://willhaley.com/blog/custom-debian-live-envi
 ```bash
 docker run -t --rm --privileged \
   -e OUTPUT_FILE=my-custom.iso \
+  -e ROOT_PASSWD=changeme \
   -v $(pwd)/my-config:/root/files \
   aitorpazos/create-debian-iso:debian-bookworm
 ```
@@ -56,7 +57,7 @@ See the [`example/`](example/) directory for a minimal working configuration.
 | Variable | Default | Description |
 |---|---|---|
 | `OUTPUT_FILE` | `<distro>-<flavor>-custom.iso` | Output ISO filename |
-| `ROOT_PASSWD` | `toor` | Root password for the live system |
+| `ROOT_PASSWD` | *(random)* | Root password for the live system. If not set, a random 32-char password is generated and printed at build time. |
 
 ## Building from source
 

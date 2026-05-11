@@ -16,7 +16,6 @@ ENV DISTRO=${DISTRO} \
     DISTRO_VERSION=${DISTRO_VERSION} \
     DISTRO_FLAVOR=${DISTRO_FLAVOR} \
     ARCH=${ARCH} \
-    OUTPUT_FILE=${DISTRO}-${DISTRO_FLAVOR}-custom.iso \
-    ROOT_PASSWD=toor
+    OUTPUT_FILE=${DISTRO}-${DISTRO_FLAVOR}-custom.iso
 
 ENTRYPOINT [ "/usr/local/bin/create-iso.sh" ]

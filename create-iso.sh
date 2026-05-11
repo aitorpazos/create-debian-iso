@@ -4,10 +4,17 @@ set -euo pipefail
 # DISTRO=<Set the distro to create>
 # DISTRO_VERSION=<Set the distro version to create>
 # ARCH=<Set the architecture: amd64 or arm64>
-# ROOT_PASSWD=<Set the root password>
+# ROOT_PASSWD=<Set the root password via env var>
 
 # Default ARCH to amd64 if not set
 ARCH="${ARCH:-amd64}"
+
+# Generate random root password if not provided
+if [ -z "${ROOT_PASSWD:-}" ]; then
+  ROOT_PASSWD="$(head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+  echo "WARNING: ROOT_PASSWD not set. Generated random password: ${ROOT_PASSWD}"
+  echo "         Save this password — it will not be shown again."
+fi
 
 # Check if required files have been provided
 if [ ! -f /root/files/config/configure.sh ] || \
